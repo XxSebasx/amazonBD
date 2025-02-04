@@ -1,4 +1,4 @@
-const { Cliente, Pedido } = require("../models");
+const { Cliente, Pedido } = require("../models/relacion");
 
 module.exports = {
     async getAllClientes(req, res) {
@@ -46,13 +46,62 @@ module.exports = {
         }
     },
 
-    async addPedido(req, res) { // Asegúrate de que esta función esté definida
+    async addPedido(req, res) { 
         try {
             const { clienteID, fecha, monto, estado } = req.body;
             const nuevoPedido = await Pedido.create({ clienteID, fecha, monto, estado });
             res.json(nuevoPedido);
         } catch (error) {
             res.status(400).json({ error: error.message });
+        }
+    },
+
+    async getPedidos(req,res){
+        try {
+            const pedidos = await Pedido.findAll(
+                {
+                    include: [{
+                        model: Cliente,
+                        attributes: ['nombre']
+                    }]
+                }
+            );
+            res.json(pedidos);
+            
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
+    },
+
+    async getPedidoById(req,res){
+        const pedido = await Pedido.findByPk(req.params.id,
+            {
+                include:{
+                    model: Cliente
+                }
+            }
+        );
+        res.json(pedido);
+    },
+
+    async updateEstadoPedido(req,res){
+        try {
+            const pedido = await Pedido.findByPk(req.params.id);
+            pedido.estado = req.body.estado;
+            await pedido.save();
+            res.json(pedido);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    async deletePedido(req,res){
+        try {
+            const pedido = await Pedido.findByPk(req.params.id);
+            await pedido.destroy();
+            res.json({ message: "Pedido eliminado exitosamente" });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
 };

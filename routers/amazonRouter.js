@@ -7,6 +7,11 @@ router.post("/clientes", amazonController.addClient);
 router.get("/clientes/:id", amazonController.getClientById);
 router.delete("/clientes/:id", amazonController.deleteCliente);
 
-router.post("/pedidos", amazonController.addPedido); // Asegúrate de que esta línea esté correcta
+router.post("/pedidos", amazonController.addPedido);
+router.get("/pedidos", amazonController.getPedidos);
+router.get("/pedidos/:id", amazonController.getPedidoById);
+router.put("/pedidos/:id/estado", amazonController.updateEstadoPedido);
+router.delete("/pedidos/:id", amazonController.deletePedido);
+
 
 module.exports = router;

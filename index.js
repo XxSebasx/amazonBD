@@ -4,7 +4,8 @@ const path = require("path");
 
 const app = express();
 const sequelize = require('./config/database');
-require('./models'); // Importar el archivo de asociaciones
+require('./models/relacion');
+
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));

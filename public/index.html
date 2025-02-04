@@ -35,9 +35,29 @@
         <input placeholder="clienteID" id="clienteID">
         <input placeholder="monto" id="monto">
         <input placeholder="fecha" id="fecha">
-        <input placeholder="estado" id="estado">
         <button type="submit">add</button>
     </form>
+
+    <button id="getPedidos">View pedidos</button>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente ID</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyPedidos"></tbody>
+    </table>
+    <br>
+    <input type="text" placeholder="id" id="idPedido">
+    <button type="button" id="getPedido">View Pedido</button>
+    <button type="button" id="deletePedido">Delete Pedido</button>
+    <input type="text" placeholder="estado" id="nuevoEstado">
+    <button type="button" id="updatePedido">Update Pedido</button>
+
    
 
     <script src="script.js"></script>
