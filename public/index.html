@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="formCliente">
+        <input placeholder="nombre" id="nombre">
+        <input placeholder="email" id="email">
+        <input placeholder="telefono" id="telefono">
+        <button type="submit">add</button>
+    </form>
+
+
+
+    <input placeholder="id" id="idCliente">
+    <button type="button" id="getCliente">View Client</button>
+
+    <table border="1px">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Telefono</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyClientes"></tbody>
+    </table>
+
+
+    <form id="formPedido">
+        <input placeholder="clienteID" id="clienteID">
+        <input placeholder="monto" id="monto">
+        <input placeholder="fecha" id="fecha">
+        <input placeholder="estado" id="estado">
+        <button type="submit">add</button>
+    </form>
+   
+
+    <script src="script.js"></script>
+
+</html>
