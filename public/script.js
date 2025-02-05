@@ -3,11 +3,12 @@ document.getElementById("getCliente").addEventListener("click", getClientById);
 
 document.getElementById("formPedido").addEventListener("submit", addPedido);
 
-document.getElementById("getPedido").addEventListener("click", getPedidoById);
-
 document.getElementById("updatePedido").addEventListener("click", updatePedido);
 
 document.getElementById("deletePedido").addEventListener("click", deletePedido);
+
+document.getElementById("getClientesCompendidos").addEventListener("click", getClientesCompendidos);
+
 
 getClients();
 getPedidos();
@@ -55,10 +56,10 @@ async function getClients() {
             <td>${cliente.ID}</td>
             <td>${cliente.nombre}</td>
             <td>${cliente.email}</td>
-            <td>${cliente.telefono}</td>`;
+            <td>${cliente.telefono}</td>`
+            ;
     }
     tabla.innerHTML = filas;
-    console.log(clientes);
   } else {
     const error = await response.json();
     alert(error.error);
@@ -74,38 +75,59 @@ async function getClientById() {
     },
   });
   const cliente = await response.json();
-  console.log(cliente);
+  let table = document.getElementById("tbodyPedidos");
+  let table2 = document.getElementById("tbodyClientes");
+  table2.innerHTML = `<tr>
+        <td>${cliente.ID}</td>
+        <td>${cliente.nombre}</td>
+        <td>${cliente.email}</td>
+        <td>${cliente.telefono}</td>
+        </tr>`;
+  let filas = "";
+  if (response.ok) {
+    for (let i = 0; i < cliente.pedidos.length; i++) {
+      filas += `<tr>
+        <td>${cliente.pedidos[i].ID}</td>
+        <td>${cliente.pedidos[i].fecha}</td>
+        <td>${cliente.pedidos[i].monto}</td>
+        <td>${cliente.pedidos[i].estado}</td>
+        <td>${cliente.pedidos[i].clienteID}</td>
+        <td>${cliente.nombre}</td>
+      </tr>`;
+      console.log(cliente.pedidos[i]);
+    }
+    table.innerHTML = filas;
+  }
 }
 
 async function addPedido(event) {
-    event.preventDefault();
-    const clienteID = document.getElementById("clienteID").value;
-    const fecha = new Date(document.getElementById("fecha").value);
-    const monto = document.getElementById("monto").value;
-    const response = await fetch('/pedidos', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fecha, monto,clienteID }),
-    });
-    
-    try {
-        if (response.ok) {
-            document.getElementById("fecha").value = "";
-            document.getElementById("monto").value = "";
-            document.getElementById("clienteID").value = "";
-            alert("Pedido agregado exitosamente");
-        } else {
-            const error = await response.json();
-            alert(error.error);
-        }
-    }catch(error){
-        console.error(error);
+  event.preventDefault();
+  const clienteID = document.getElementById("clienteID").value;
+  const fecha = new Date(document.getElementById("fecha").value);
+  const monto = document.getElementById("monto").value;
+  const response = await fetch("/pedidos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fecha, monto, clienteID }),
+  });
+
+  try {
+    if (response.ok) {
+      document.getElementById("fecha").value = "";
+      document.getElementById("monto").value = "";
+      document.getElementById("clienteID").value = "";
+      alert("Pedido agregado exitosamente");
+      getPedidos();
+    } else {
+      const error = await response.json();
+      alert(error.error);
     }
+  } catch (error) {
+    console.error(error);
+  }
 }
-
-
 
 async function getPedidos() {
   const response = await fetch("/pedidos", {
@@ -120,21 +142,23 @@ async function getPedidos() {
     let tabla = document.getElementById("tbodyPedidos");
     let filas = "";
     for (let index = 0; index < pedidos.length; index++) {
-      let pedido = pedidos[index];
       filas += `<tr>
-            <td>${pedido.ID}</td>
-            <td>${new Date(pedido.fecha).toLocaleDateString()}</td>
-            <td>${pedido.monto}</td>
-            <td>${pedido.estado}</td>`;
+      <td>${pedidos[index].ID}</td>
+      <td>${pedidos[index].fecha}</td>
+      <td>${pedidos[index].monto}</td>
+      <td>${pedidos[index].estado}</td>
+      <td>${pedidos[index].clienteID}</td>
+      <td>${pedidos[index].Cliente.nombre}</td>
+      </tr>`;
     }
-    console.log(pedidos);
+    tabla.innerHTML = filas;
   } else {
     const error = await response.json();
     alert(error.error);
   }
 }
 
-async function getPedidoById(req,res) {
+async function getPedidoById() {
   const id = document.getElementById("idPedido").value;
   const response = await fetch(`/pedidos/${id}`, {
     method: "GET",
@@ -143,7 +167,19 @@ async function getPedidoById(req,res) {
     },
   });
   const pedido = await response.json();
-  console.log(pedido);
+  let tabla = document.getElementById("tbodyPedidos");
+  let filas = "";
+  if (response.ok) {
+    filas += `<tr>
+      <td>${pedido.ID}</td>
+      <td>${pedido.fecha}</td>
+      <td>${pedido.monto}</td>
+      <td>${pedido.estado}</td>
+      <td>${pedido.clienteID}</td>
+      </tr>`;
+    tabla.innerHTML = filas;
+  }
+
 }
 
 async function updatePedido() {
@@ -157,9 +193,8 @@ async function updatePedido() {
     body: JSON.stringify({ estado }),
   });
   if (response.ok) {
-    alert("Pedido actualizado exitosamente");
     getPedidos();
-  }else{
+  } else {
     const error = await response.json();
     alert(error.error);
   }

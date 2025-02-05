@@ -4,6 +4,7 @@ module.exports = {
     async getAllClientes(req, res) {
         try {
             const clientes = await Cliente.findAll();
+            console.log(clientes);
             res.json(clientes);
         } catch (error) {
             res.status(500).json({ error: error.message });
