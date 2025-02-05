@@ -9,6 +9,7 @@ document.getElementById("deletePedido").addEventListener("click", deletePedido);
 
 document.getElementById("getClientesCompendidos").addEventListener("click", getClientesCompendidos);
 
+document.getElementById("getPedidosFecha").addEventListener("click", getPedidosByDate);
 
 getClients();
 getPedidos();
@@ -216,4 +217,45 @@ async function deletePedido() {
     alert(error.error);
   }
 }
+
+async function getClientesCompendidos() {
+  const response = await fetch("/clientescompendidos", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (response.ok) {
+    const clientesCompendidos = await response.json();
+    let tabla = document.getElementById("tablaAvanzada");
+    let filas = "";
+    for (let index = 0; index < clientesCompendidos.length; index++) {
+      filas += `<tr>
+        <td>${clientesCompendidos[index].ID}</td>
+        <td>${clientesCompendidos[index].nombre}</td>
+        <td>${clientesCompendidos[index].email}</td>
+        <td>${clientesCompendidos[index].telefono}</td>
+        <td>${clientesCompendidos[index].pedidos.length}</td>
+      </tr>`;
+    }
+    tabla.innerHTML = filas;
+  }
+}
+
+async function getPedidosByDate() {
+  const fecha = document.getElementById("fechaBuscar").value;
+  console.log(fecha);
+  const response = await fetch(`/pedidos/${fecha}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const pedidos = await response.json();
+  console.log(pedidos)
+}
+
+
+
+
 

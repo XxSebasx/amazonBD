@@ -104,5 +104,36 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
+    },
+
+    async clientesconpedidos(req,res){
+        const clientes = await Cliente.findAll({
+                include: [{
+                    model: Pedido,
+                    required: true,
+                }]
+        });
+        res.json(clientes);
+    },
+
+    async getpedidosByDate(req,res){
+        let fechaReq = req.params.fecha
+        fechaReq = new Date(fechaReq);
+        const pedidos = await Pedido.findAll();
+        res.json(pedidos);
+    },
+
+    async totalPedidoClienteByID(req,res){
+        const clienteID = req.params.id
+        const pedidos = await Pedido.findAll({
+            where: {
+                clienteID: clienteID
+            }
+        });
+        let total = 0;
+        for(let i=0; i<pedidos.length; i++){
+            total += pedidos[i].monto
+        }
+        res.json({total});
     }
 };

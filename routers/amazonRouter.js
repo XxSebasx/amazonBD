@@ -13,6 +13,10 @@ router.get("/pedidos/:id", amazonController.getPedidoById);
 router.put("/pedidos/:id/estado", amazonController.updateEstadoPedido);
 router.delete("/pedidos/:id", amazonController.deletePedido);
 
+router.get("/clientescompendidos", amazonController.clientesconpedidos);
+
+router.get("/pedidos/:fecha", amazonController.getpedidosByDate);
+
 
 
 
