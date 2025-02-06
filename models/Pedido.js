@@ -10,14 +10,18 @@ const Pedido = sequelize.define('pedido', {
     fecha:{
         type: DataTypes.DATEONLY,
         allowNull: false,
-        required: true
+        required: true,
+        validate:{
+            isDate: true
+        }
     },
     monto:{
         type: DataTypes.DECIMAL,
         allowNull: false,
         required: true,
         validate:{
-            min: 1
+            min: 1,
+            isDecimal: true
         }
     },
     estado:{

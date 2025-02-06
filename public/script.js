@@ -1,3 +1,5 @@
+
+
 document.getElementById("formCliente").addEventListener("submit", addClient);
 document.getElementById("getCliente").addEventListener("click", getClientById);
 
@@ -10,6 +12,10 @@ document.getElementById("deletePedido").addEventListener("click", deletePedido);
 document.getElementById("getClientesCompendidos").addEventListener("click", getClientesCompendidos);
 
 document.getElementById("getPedidosFecha").addEventListener("click", getPedidosByDate);
+
+document.getElementById("getTotalPedido").addEventListener("click", totalPedidoClienteByID);
+
+document.getElementById("deleteCliente").addEventListener("click",deleteCliente);
 
 getClients();
 getPedidos();
@@ -105,7 +111,7 @@ async function addPedido(event) {
   event.preventDefault();
   const clienteID = document.getElementById("clienteID").value;
   const fecha = new Date(document.getElementById("fecha").value);
-  const monto = document.getElementById("monto").value;
+  const monto = parseFloat(document.getElementById("monto").value);
   const response = await fetch("/pedidos", {
     method: "POST",
     headers: {
@@ -128,6 +134,18 @@ async function addPedido(event) {
   } catch (error) {
     console.error(error);
   }
+}
+
+async function deleteCliente() {
+  const id = document.getElementById("idCliente").value;
+  const response = await fetch(`/clientes/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  getClients();
+  getPedidos();
 }
 
 async function getPedidos() {
@@ -228,7 +246,7 @@ async function getClientesCompendidos() {
   if (response.ok) {
     const clientesCompendidos = await response.json();
     let tabla = document.getElementById("tablaAvanzada");
-    let filas = "";
+    let filas = "<tr><th>ID cliente</th><th>Nombre</th><th>email</th><th>telefono</th><th>cantidad de</th></tr>";
     for (let index = 0; index < clientesCompendidos.length; index++) {
       filas += `<tr>
         <td>${clientesCompendidos[index].ID}</td>
@@ -242,17 +260,23 @@ async function getClientesCompendidos() {
   }
 }
 
-async function getPedidosByDate() {
-  const fecha = document.getElementById("fechaBuscar").value;
-  console.log(fecha);
-  const response = await fetch(`/pedidos/${fecha}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const pedidos = await response.json();
-  console.log(pedidos)
+
+
+async function totalPedidoClienteByID() {
+  try {
+    const id = document.getElementById("idTotal").value;
+    const response = await fetch(`/totalpedidos/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const total = await response.json();
+    document.getElementById("tablaAvanzada").innerHTML = `<tr><th>ID cliente</th><th>total</th></tr><tr><td>${id}</td> <td>${total}</td></tr>`;
+    
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 

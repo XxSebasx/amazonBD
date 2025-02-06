@@ -39,7 +39,6 @@ module.exports = {
     async deleteCliente(req, res) {
         try {
             const cliente = await Cliente.findByPk(req.params.id);
-            if (!cliente) return res.status(404).json({ message: "Cliente no encontrado" });
             await cliente.destroy();
             res.json({ message: "Cliente eliminado exitosamente" });
         } catch (error) {
@@ -116,24 +115,24 @@ module.exports = {
         res.json(clientes);
     },
 
-    async getpedidosByDate(req,res){
-        let fechaReq = req.params.fecha
-        fechaReq = new Date(fechaReq);
-        const pedidos = await Pedido.findAll();
-        res.json(pedidos);
-    },
+
 
     async totalPedidoClienteByID(req,res){
-        const clienteID = req.params.id
-        const pedidos = await Pedido.findAll({
-            where: {
-                clienteID: clienteID
+        try {
+            const clienteID = req.params.id
+            const pedidos = await Pedido.findAll({
+                where: {
+                    clienteID: clienteID
+                }
+            });
+            let total = 0;
+            for(let i=0; i<pedidos.length; i++){
+                total += parseFloat(pedidos[i].monto)
             }
-        });
-        let total = 0;
-        for(let i=0; i<pedidos.length; i++){
-            total += pedidos[i].monto
+            console.log(pedidos)
+            res.json(total);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
         }
-        res.json({total});
     }
 };
